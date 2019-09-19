@@ -149,6 +149,7 @@ public class FilterExamples {
     }
 
     // grabSelectedNames end
+
     /**
      * What features on in this bounding Box?
      *
@@ -527,3 +528,4 @@ public class FilterExamples {
         functionListPretty();
     }
 }
+
