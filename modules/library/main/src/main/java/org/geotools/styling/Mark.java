@@ -123,4 +123,14 @@ public interface Mark extends org.opengis.style.Mark, Symbol {
     void setExternalMark(org.opengis.style.ExternalMark externalMark);
 
     void accept(org.geotools.styling.StyleVisitor visitor);
+    
+    /**
+     * Mark Along line
+     *
+     * @param Indicates to use WKT as vector graphic and not image
+     */
+    
+    public boolean isMarkAlongLine();
+    
+    public void setMarkAlongLine(boolean isMarkAlongLine);
 }

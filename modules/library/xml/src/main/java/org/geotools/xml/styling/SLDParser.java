@@ -37,6 +37,7 @@ import org.geotools.data.Base64;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.NameImpl;
 import org.geotools.filter.ExpressionDOMParser;
+import org.geotools.filter.Filters;
 import org.geotools.metadata.i18n.ErrorKeys;
 import org.geotools.metadata.i18n.Errors;
 import org.geotools.styling.AnchorPoint;
@@ -64,6 +65,8 @@ import org.geotools.styling.LinePlacement;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.LogarithmicContrastMethodStrategy;
 import org.geotools.styling.Mark;
+import org.geotools.styling.MarkAlongLine;
+import org.geotools.styling.MarkImpl;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedLayerImpl;
 import org.geotools.styling.NamedStyle;
@@ -103,6 +106,7 @@ import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.style.ContrastMethod;
+import org.opengis.style.GraphicalSymbol;
 import org.opengis.style.SemanticType;
 import org.opengis.util.InternationalString;
 import org.w3c.dom.CharacterData;
@@ -175,6 +179,8 @@ public class SLDParser {
     private static final String VendorOptionString = "VendorOption";
 
     private static final String PerpendicularOffsetString = "PerpendicularOffset";
+    
+    private static final String markAlongLineVendorOptionString = "markAlongLine";
 
     private static final Pattern WHITESPACES = Pattern.compile("\\s+", Pattern.MULTILINE);
 
@@ -1811,6 +1817,7 @@ public class SLDParser {
 
         NodeList children = root.getChildNodes();
         final int length = children.getLength();
+        Map<String,String> vendorOptions=new HashMap<String, String>();
         for (int i = 0; i < length; i++) {
             Node child = children.item(i);
 
@@ -1844,9 +1851,16 @@ public class SLDParser {
                     }
                 }
                 mark.setWellKnownName(wellKnownName);
+            }else if (childName.equalsIgnoreCase(VendorOptionString)) {
+                parseVendorOption(vendorOptions, child);
             }
         }
-
+        //marking of WKT along line only works with WKT
+        if(mark.getWellKnownName() != null)
+            mark.setMarkAlongLine(
+                    Boolean.parseBoolean(vendorOptions
+                            .getOrDefault(markAlongLineVendorOptionString, "false")));
+                
         return mark;
     }
 
